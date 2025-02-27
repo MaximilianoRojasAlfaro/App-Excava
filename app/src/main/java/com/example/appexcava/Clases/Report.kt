@@ -11,7 +11,7 @@ data class Report(
     @ColumnInfo(name = "num_report")
     var numReport: String = "",
     @ColumnInfo(name = "nombre_trabajador")
-    private var nombreTrabajador: String = "",
+    var nombreTrabajador: String = "",
     @ColumnInfo(name = "fecha")
     var fecha: String = "",
     @ColumnInfo(name = "faena")
