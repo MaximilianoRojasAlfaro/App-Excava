@@ -1,18 +1,28 @@
 package com.example.appexcava.Clases
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "Usuarios")
 class Usuario(
-    private val id: Int = 0,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    @ColumnInfo(name = "nombre_usuario")
     private var nombreUsuario: String = "",
+    @ColumnInfo(name = "contrasena")
     private var contrasena: String = "",
+    @ColumnInfo(name = "correo")
     private var correo: String = "",
+    @ColumnInfo(name = "nombre")
     var nombre: String = "",
+    @ColumnInfo(name = "apellido")
     var apellido: String = "",
+    @ColumnInfo(name = "es_administrador")
     var esAdministrador: Boolean = false,
-    var empresa: Empresa = Empresa()
+    @ColumnInfo(name = "empresa_id")
+    var empresaId: Int = 0
 ) {
-    fun getId(): Int {
-        return id
-    }
 
     fun getNombreUsuario(): String {
         return nombreUsuario

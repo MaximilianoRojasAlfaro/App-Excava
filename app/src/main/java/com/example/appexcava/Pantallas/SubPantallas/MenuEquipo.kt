@@ -87,7 +87,7 @@ fun MenuEquipo(navController: NavController){
 
                 Spacer(modifier = Modifier.padding(vertical = 20.dp))
 
-                BotonNavegacion(destino = "agregarEquipo", texto = "Editar", navController = navController, color = Color.LightGray)
+                BotonNavegacion(destino = "eliminarEquipo", texto = "Editar", navController = navController, color = Color.LightGray)
 
                 Spacer(modifier = Modifier.padding(vertical = 20.dp))
 
