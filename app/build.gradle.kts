@@ -1,9 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("kotlin-kapt")
-    //alias(libs.plugins.compose.compiler)
-    //id("com.google.devtools.ksp")
 }
 
 android {
@@ -66,9 +63,6 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.icons.extended)
     implementation(libs.androidx.coil)
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    kapt("androidx.room:room-compiler:2.6.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
