@@ -1,7 +1,7 @@
 package com.example.appexcava.Clases
 
 class CheckList(
-    val id: Int = 0,
+    var id: Int = 0,
     private var nombreTrabajador: String = "",
     var fecha: String = "",
     var faena: String = "",

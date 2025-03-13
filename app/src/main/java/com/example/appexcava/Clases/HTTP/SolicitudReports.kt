@@ -1,7 +1,6 @@
 package com.example.appexcava.Clases.HTTP
 
 import com.example.appexcava.Clases.HTTP.FuncionesAyuda.realizarSolicitudHTTP
-import com.example.appexcava.Clases.Maquina
 import com.example.appexcava.Clases.Report
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
