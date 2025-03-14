@@ -1,30 +1,33 @@
 package com.example.appexcava.Clases.HTTP
 
+import android.util.Log
 import com.example.appexcava.Clases.HTTP.FuncionesAyuda.realizarSolicitudHTTP
 import com.example.appexcava.Clases.Usuario
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONArray
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
+import org.json.JSONObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 suspend fun obtenerUsuarios(): List<Usuario> = suspendCoroutine { continuation ->
     CoroutineScope(Dispatchers.IO).launch {
 
-        val url = "http://localhost/usuarios.php?action=select"
+        val url = "http://192.168.100.111/App_excava/BD/usuarios.php?action=select"
         val metodo = "GET"
-
         val respuesta = realizarSolicitudHTTP(url, metodo)
+
+        Log.d("obtenerUsuarios", "Respuesta JSON: $respuesta")
 
         if(respuesta != null){
             try {
 
-                val usuariosJSON = JSONArray(respuesta)
+                val respuestaUTF8 = String(respuesta.toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
+                Log.d("obtenerUsuarios", "Respuesta UTF-8: $respuestaUTF8")
+                val usuariosJSON = JSONArray(respuestaUTF8)
+
+                //val usuariosJSON = JSONArray(respuesta)
                 var listaUsuarios = mutableListOf<Usuario>()
 
                 for(i in 0 until usuariosJSON.length()){
@@ -42,15 +45,83 @@ suspend fun obtenerUsuarios(): List<Usuario> = suspendCoroutine { continuation -
                     usuario.rol = usuarioJSON.getString("rol")
                     usuario.empresaId = usuarioJSON.getInt("empresaId")
 
+                    Log.d("obtenerUsuarios", "Usuario creado: ${usuario.nombre} ${usuario.apellido}")
+
                     listaUsuarios.add(usuario)
                 }
                 continuation.resume(listaUsuarios) // Es como un return pero para corrutinas
 
             } catch(e: Exception){
+                Log.d("obtenerUsuarios", "Error al parsear JSON: ${e.message}")
                 continuation.resume(emptyList())
             }
         } else {
+            Log.d("obtenerUsuarios", "Respuesta nula // If falso")
             continuation.resume(emptyList())
         }
+    }
+}
+
+fun eliminarUsuario(id: Int) {
+    CoroutineScope(Dispatchers.IO).launch {
+
+        val url = "http://192.168.100.111/App_excava/BD/usuarios.php?action=delete"
+        val metodo = "POST"
+        val datos = JSONObject().apply {
+            put("id", id)
+        }.toString()
+
+        val respuesta = realizarSolicitudHTTP(url, metodo, datos)
+
+        if (respuesta != null){
+            try {
+
+                val jsonResponse = JSONObject(respuesta)
+                val mensaje = jsonResponse.getString("mensaje")
+                Log.e("eliminarUsuario", "Usuario eliminado con exito")
+
+            }catch(e: Exception){
+                Log.e("eliminarUsuario", "Error al parsear JSON: ${e.message}")
+            }
+
+        } else {
+            Log.e("eliminarUsuario", "Respuesta nula")
+        }
+    }
+}
+
+fun editarUsuario(usuario: Usuario){
+
+    CoroutineScope(Dispatchers.IO).launch {
+
+        val url = "http://192.168.100.111/App_excava/BD/usuarios.php?action=update"
+        val metodo = "POST"
+        val datos = JSONObject().apply {
+            put("id", usuario.id)
+            put("nombreUsuario", usuario.getNombreUsuario())
+            put("contrasena", usuario.getContrasena())
+            put("correo", usuario.getCorreo())
+            put("nombre", usuario.nombre)
+            put("apellido", usuario.apellido)
+            put("rol", usuario.rol)
+        }.toString()
+
+        val respuesta = realizarSolicitudHTTP(url, metodo, datos)
+
+        if (respuesta != null){
+            try {
+
+                val jsonResponse = JSONObject(respuesta)
+                val mensaje = jsonResponse.getString("mensaje")
+                Log.e("editarUsuario", "Usuario editado con exito")
+
+            }catch(e: Exception){
+                Log.e("editarUsuario", "Error al parsear JSON: ${e.message}")
+            }
+
+        } else {
+            Log.e("editarUsuario", "Respuesta nula")
+        }
+
     }
 }

@@ -1,19 +1,19 @@
 package com.example.appexcava.Clases.HTTP
 
 import com.example.appexcava.Clases.CheckList
+import com.example.appexcava.Clases.HTTP.FuncionesAyuda.procesarValorBooleanNull
 import com.example.appexcava.Clases.HTTP.FuncionesAyuda.realizarSolicitudHTTP
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONArray
-import org.json.JSONObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 suspend fun obtenerChecklists(): List<CheckList> = suspendCoroutine { continuation ->
     CoroutineScope(Dispatchers.IO).launch {
 
-        val url = "http://localhost/reports.php?action=select"
+        val url = "http://localhost/checklists.php?action=select"
         val metodo = "GET"
 
         val respuesta = realizarSolicitudHTTP(url, metodo)
@@ -22,7 +22,7 @@ suspend fun obtenerChecklists(): List<CheckList> = suspendCoroutine { continuati
             try {
 
                 val checklistsJSON = JSONArray(respuesta)
-                var listaCheckList = mutableListOf<CheckList>()
+                val listaChecklists = mutableListOf<CheckList>()
 
                 for(i in 0 until checklistsJSON.length()){
 
@@ -34,31 +34,31 @@ suspend fun obtenerChecklists(): List<CheckList> = suspendCoroutine { continuati
                     checklist.setNombreTrabajador(checklistJSON.getString("nombreTrabajador"))
                     checklist.fecha = checklistJSON.getString("fecha")
                     checklist.faena= checklistJSON.getString("faena")
-                    checklist.sistemaLuces = procesarValorChecklist(checklistJSON, "sistemaLuces")
-                    checklist.sistemaFrenos = procesarValorChecklist(checklistJSON, "sistemaFrenos")
-                    checklist.vidrios = procesarValorChecklist(checklistJSON, "vidrios")
-                    checklist.fugasAceite = procesarValorChecklist(checklistJSON, "fugasAceite")
-                    checklist.sistemaDireccion = procesarValorChecklist(checklistJSON, "sistemaDireccion")
-                    checklist.accesorios = procesarValorChecklist(checklistJSON, "accesorios")
-                    checklist.alarmaRetroceso = procesarValorChecklist(checklistJSON, "alarmaRetroceso")
-                    checklist.espejosRetrovisores = procesarValorChecklist(checklistJSON, "espejosRetrovisores")
-                    checklist.extintores = procesarValorChecklist(checklistJSON, "extintores")
-                    checklist.botiquin = procesarValorChecklist(checklistJSON, "botiquin")
-                    checklist.funAccesoriosAdicionales = procesarValorChecklist(checklistJSON, "funcAccesoriosAdicionales")
-                    checklist.cinturonesSeguridad = procesarValorChecklist(checklistJSON, "cinturonesSeguridad")
-                    checklist.baliza = procesarValorChecklist(checklistJSON, "baliza")
-                    checklist.estadoNeumaticos = procesarValorChecklist(checklistJSON, "estadoNeumaticos")
-                    checklist.camionesTolvas = procesarValorChecklist(checklistJSON, "camionesTolvas")
-                    checklist.balde = procesarValorChecklist(checklistJSON, "balde")
-                    checklist.cilindroHidraulico = procesarValorChecklist(checklistJSON, "cilindroHidraulico")
-                    checklist.aireAcondicionado = procesarValorChecklist(checklistJSON, "aireAcondicionado")
+                    checklist.sistemaLuces = procesarValorBooleanNull(checklistJSON, "sistemaLuces")
+                    checklist.sistemaFrenos = procesarValorBooleanNull(checklistJSON, "sistemaFrenos")
+                    checklist.vidrios = procesarValorBooleanNull(checklistJSON, "vidrios")
+                    checklist.fugasAceite = procesarValorBooleanNull(checklistJSON, "fugasAceite")
+                    checklist.sistemaDireccion = procesarValorBooleanNull(checklistJSON, "sistemaDireccion")
+                    checklist.accesorios = procesarValorBooleanNull(checklistJSON, "accesorios")
+                    checklist.alarmaRetroceso = procesarValorBooleanNull(checklistJSON, "alarmaRetroceso")
+                    checklist.espejosRetrovisores = procesarValorBooleanNull(checklistJSON, "espejosRetrovisores")
+                    checklist.extintores = procesarValorBooleanNull(checklistJSON, "extintores")
+                    checklist.botiquin = procesarValorBooleanNull(checklistJSON, "botiquin")
+                    checklist.funAccesoriosAdicionales = procesarValorBooleanNull(checklistJSON, "funcAccesoriosAdicionales")
+                    checklist.cinturonesSeguridad = procesarValorBooleanNull(checklistJSON, "cinturonesSeguridad")
+                    checklist.baliza = procesarValorBooleanNull(checklistJSON, "baliza")
+                    checklist.estadoNeumaticos = procesarValorBooleanNull(checklistJSON, "estadoNeumaticos")
+                    checklist.camionesTolvas = procesarValorBooleanNull(checklistJSON, "camionesTolvas")
+                    checklist.balde = procesarValorBooleanNull(checklistJSON, "balde")
+                    checklist.cilindroHidraulico = procesarValorBooleanNull(checklistJSON, "cilindroHidraulico")
+                    checklist.aireAcondicionado = procesarValorBooleanNull(checklistJSON, "aireAcondicionado")
                     checklist.observaciones= checklistJSON.getString("observaciones")
                     checklist.maquinaId = checklistJSON.getInt("maquinaId")
                     checklist.empresaId = checklistJSON.getInt("empresaId")
 
-                    listaCheckList.add(checklist)
+                    listaChecklists.add(checklist)
                 }
-                continuation.resume(listaCheckList) // Es como un return pero para corrutinas
+                continuation.resume(listaChecklists) // Es como un return pero para corrutinas
 
             } catch(e: Exception){
                 continuation.resume(emptyList())
@@ -69,13 +69,3 @@ suspend fun obtenerChecklists(): List<CheckList> = suspendCoroutine { continuati
     }
 }
 
-fun procesarValorChecklist(checklistJSON: JSONObject, campo: String): Boolean? {
-
-    val respuesta: Boolean? = if (checklistJSON.has(campo) && !checklistJSON.isNull(campo)) {
-        checklistJSON.getBoolean(campo)
-    } else {
-        null
-    }
-
-    return respuesta
-}

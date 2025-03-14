@@ -1,7 +1,7 @@
 package com.example.appexcava.Clases
 
 class Mantencion(
-    val id: Int = 0,
+    var id: Int = 0,
     private var nombreTrabajador: String = "",
     var fecha: String = "",
     var faena: String = "",
@@ -23,6 +23,7 @@ class Mantencion(
     var filtrosAceiteHidraulico: Boolean? = null,
     var filtrosDecantadorAgua: Boolean? = null,
     var limpiezaFiltroCabina: Boolean? = null,
+    var filtroCabina: Boolean? = null,
     var observaciones: String = "",
     var maquinaId: Int = 0,
     var empresaId: Int = 0

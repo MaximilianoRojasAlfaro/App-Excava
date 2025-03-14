@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONArray
+import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
@@ -49,4 +50,14 @@ fun realizarSolicitudHTTP(url: String, metodo: String, datos: String? = null): S
             println("Error: ${e.message}")
             return "Error: ${e.message}"
         }
+}
+
+fun procesarValorBooleanNull(respuestaJSON: JSONObject, campo: String): Boolean? {
+
+    val respuesta: Boolean? = if (respuestaJSON.has(campo) && !respuestaJSON.isNull(campo)) {
+        respuestaJSON.getBoolean(campo)
+    } else {
+        null
+    }
+    return respuesta
 }

@@ -12,7 +12,7 @@ import kotlin.coroutines.suspendCoroutine
 suspend fun obtenerReports(): List<Report> = suspendCoroutine { continuation ->
     CoroutineScope(Dispatchers.IO).launch {
 
-        val url = "http://localhost/reports.php?action=select"
+        val url = "http://192.168.100.111/App_excava/BD/reports.php?action=select"
         val metodo = "GET"
 
         val respuesta = realizarSolicitudHTTP(url, metodo)
@@ -21,7 +21,7 @@ suspend fun obtenerReports(): List<Report> = suspendCoroutine { continuation ->
             try {
 
                 val reportsJSON = JSONArray(respuesta)
-                var listaReports = mutableListOf<Report>()
+                val listaReports = mutableListOf<Report>()
 
                 for(i in 0 until reportsJSON.length()){
 

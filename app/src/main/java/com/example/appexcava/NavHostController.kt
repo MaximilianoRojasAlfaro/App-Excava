@@ -38,7 +38,15 @@ fun NavHostController() {
 
         composable("menuUsuario") { MenuUsuario(navController)}
         composable("agregarUsuario") { AgregarUsuario(navController) }
-        composable("eliminarUsuario") { EliminarUsuario(navController)}
+        composable(
+            "eliminarUsuario?texto={texto}",
+            arguments = listOf( navArgument("texto"){
+                defaultValue = ""
+            })
+        ) {
+            val texto = it.arguments?.getString("texto")
+            EliminarUsuario(navController, texto.toString())
+        }
 
         composable("menuEquipo") { MenuEquipo(navController) }
         composable("agregarEquipo") { AgregarEquipo(navController) }

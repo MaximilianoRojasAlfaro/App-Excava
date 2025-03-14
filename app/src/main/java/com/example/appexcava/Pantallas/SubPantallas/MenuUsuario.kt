@@ -87,11 +87,11 @@ fun MenuUsuario(navController: NavController){
 
                 Spacer(modifier = Modifier.padding(vertical = 20.dp))
 
-                BotonNavegacion(destino = "eliminarUsuario", texto = "Editar", navController = navController, color = Color.LightGray)
+                BotonNavegacion(destino = "eliminarUsuario?texto=Editar", texto = "Editar", navController = navController, color = Color.LightGray)
 
                 Spacer(modifier = Modifier.padding(vertical = 20.dp))
 
-                BotonNavegacion(destino = "eliminarUsuario", texto = "Eliminar", navController = navController, color = Color.Red)
+                BotonNavegacion(destino = "eliminarUsuario?texto=Eliminar", texto = "Eliminar", navController = navController, color = Color.Red)
             }
         }
     }

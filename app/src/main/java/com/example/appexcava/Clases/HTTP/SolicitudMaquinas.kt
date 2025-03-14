@@ -12,7 +12,7 @@ import kotlin.coroutines.suspendCoroutine
 suspend fun obtenerMaquinas(): List<Maquina> = suspendCoroutine { continuation ->
     CoroutineScope(Dispatchers.IO).launch {
 
-        val url = "http://localhost/maquinas.php?action=select"
+        val url = "http://192.168.100.111/App_excava/BD/maquinas.php?action=select"
         val metodo = "GET"
 
         val respuesta = realizarSolicitudHTTP(url, metodo)
