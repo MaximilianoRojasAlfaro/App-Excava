@@ -1,5 +1,6 @@
 package com.example.appexcava.Pantallas
 
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,15 +32,19 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,13 +52,59 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.appexcava.Clases.HTTP.editarUsuario
+import com.example.appexcava.Clases.HTTP.obtenerUsuarioPorId
+import com.example.appexcava.Clases.HTTP.obtenerUsuarios
+import com.example.appexcava.Clases.Usuario
 import com.example.appexcava.R
 import com.example.appexcava.ui.theme.Principal
+import kotlinx.coroutines.launch
 
 //@Preview(showBackground = true, showSystemUi = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AgregarUsuario(navController: NavController) {
+fun AgregarUsuario(navController: NavController, usuarioId: Int = -1) {
+
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    val usuarioState = remember{ mutableStateOf(Usuario()) }
+
+    var nombreUsuario = remember { mutableStateOf(usuarioState.value.getNombreUsuario()) }
+    var contrasena = remember { mutableStateOf(usuarioState.value.getContrasena()) }
+    var correo = remember { mutableStateOf(usuarioState.value.getCorreo()) }
+    var nombre = remember { mutableStateOf(usuarioState.value.nombre) }
+    var apellido = remember { mutableStateOf(usuarioState.value.apellido) }
+    var rol = remember { mutableStateOf(usuarioState.value.rol) }
+
+    var checked by remember { mutableStateOf(false)}
+
+    LaunchedEffect(usuarioId) {
+        if (usuarioId != -1) {
+            scope.launch {
+
+                val fetchedUsuario = obtenerUsuarioPorId(usuarioId)
+
+                if (fetchedUsuario != null){
+
+                    usuarioState.value = fetchedUsuario
+
+                    nombreUsuario.value = fetchedUsuario.getNombreUsuario()
+                    contrasena.value = fetchedUsuario.getContrasena()
+                    correo.value = fetchedUsuario.getCorreo()
+                    nombre.value = fetchedUsuario.nombre
+                    apellido.value = fetchedUsuario.apellido
+                    rol.value = fetchedUsuario.rol
+
+                    checked = fetchedUsuario.rol.equals("administrador", ignoreCase = true)
+                } else {
+                    Toast.makeText(context, "Error al obtener usuario", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            usuarioState.value = Usuario()
+        }
+    }
 
     Scaffold(
 
@@ -97,41 +148,12 @@ fun AgregarUsuario(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                var nombre = rememberSaveable {
-                    mutableStateOf("")
-                }
-
-                var apellido = rememberSaveable {
-                    mutableStateOf("")
-                }
-
-                var correo = rememberSaveable {
-                    mutableStateOf("")
-                }
-
-                var nombreUsuario = rememberSaveable {
-                    mutableStateOf("")
-                }
-
-                var contrasena = rememberSaveable {
-                    mutableStateOf("")
-                }
-
                 CampoTextoString(placeholder = "Nombre", valor = nombre)
-
                 CampoTextoString(placeholder = "Apellido", valor = apellido)
-
                 CampoTextoString(placeholder = "Correo", valor = correo)
-
                 CampoTextoString(placeholder = "Nombre de Usuario (Ej. Juanito-Excava)", valor = nombreUsuario)
-
                 CampoTextoString(placeholder = "Contraseña", valor = contrasena)
 
-
-
-                var checkedValue by rememberSaveable {
-                    mutableStateOf(false)
-                }
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -140,10 +162,10 @@ fun AgregarUsuario(navController: NavController) {
                         modifier = Modifier
                             .size(60.dp)
                             .scale(1.5f),
-                        checked = checkedValue,
-                        onCheckedChange = {
-                            checkedValue = it
-                            println(checkedValue)
+                        checked = checked,
+                        onCheckedChange = { isChecked ->
+                            checked = isChecked
+                            usuarioState.value = usuarioState.value.copy(rol = if (isChecked) "administrador" else "usuario")
                         })
 
                     Text(text = "Rol Administrador")
@@ -157,9 +179,27 @@ fun AgregarUsuario(navController: NavController) {
 
                 Spacer(modifier = Modifier.padding(vertical = 10.dp))
 
-                BotonNavegacion(destino = "menuUsuario", texto = "Agregar", color = Color.Cyan, navController = navController)
 
+                if(usuarioId == -1){
+                    BotonNavegacion(destino = "menuUsuario", texto = "Agregar", color = Color.Cyan, navController = navController, onBtnClick = {
+                        navController.navigate("menuUsuario")
+                    })
+                } else {
+                    BotonNavegacion(destino = "menuUsuario", texto = "Editar", color = Color.Cyan, navController = navController, onBtnClick = {
 
+                        val usuarioEditado = usuarioState.value.copy(
+                            id = usuarioId,
+                            nombreUsuario = nombreUsuario.value,
+                            contrasena = contrasena.value,
+                            correo = correo.value,
+                            nombre = nombre.value,
+                            apellido = apellido.value,
+                            rol = if(checked) "administrador" else "usuario"
+                        )
+
+                        editarUsuario(usuarioEditado)
+                    })
+                }
             }
         }
     }

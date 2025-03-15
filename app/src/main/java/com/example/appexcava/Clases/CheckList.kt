@@ -1,6 +1,6 @@
 package com.example.appexcava.Clases
 
-class CheckList(
+data class CheckList(
     var id: Int = 0,
     private var nombreTrabajador: String = "",
     var fecha: String = "",

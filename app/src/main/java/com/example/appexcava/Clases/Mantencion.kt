@@ -1,6 +1,6 @@
 package com.example.appexcava.Clases
 
-class Mantencion(
+data class Mantencion(
     var id: Int = 0,
     private var nombreTrabajador: String = "",
     var fecha: String = "",

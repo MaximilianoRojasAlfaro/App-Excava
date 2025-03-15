@@ -1,6 +1,6 @@
 package com.example.appexcava.Clases
 
-class Maquina(
+data class Maquina(
     var id: Int = 0,
     var nombreEquipo: String = "",
     var marca: String = "",

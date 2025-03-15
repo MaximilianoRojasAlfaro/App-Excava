@@ -145,7 +145,7 @@ fun ListaUsuarios(navController: NavController, eliminar: Boolean){
                         navController.navigate("eliminarUsuario?texto=Eliminar")
                     } else {
                         Log.d("ListaUsuarios", "Debería navegar a AgregarUsuario")
-                        navController.navigate("agregarUsuario")
+                        navController.navigate("agregarUsuario?usuarioId=${usuario.id}")
                     }
                 }
             })

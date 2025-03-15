@@ -1,6 +1,6 @@
 package com.example.appexcava.Clases
 
-class Usuario(
+data class Usuario(
     var id: Int = 0,
     private var nombreUsuario: String = "",
     private var contrasena: String = "",

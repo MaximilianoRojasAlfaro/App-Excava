@@ -87,7 +87,7 @@ fun ElegirDocumento(navController: NavController) {
 }
 
 @Composable
-fun BotonNavegacion(destino: String, texto: String, color: Color, navController: NavController){
+fun BotonNavegacion(destino: String, texto: String, color: Color, navController: NavController, onBtnClick : () -> Unit = {}){
 
     Button(
         colors = ButtonDefaults.buttonColors(
@@ -98,6 +98,7 @@ fun BotonNavegacion(destino: String, texto: String, color: Color, navController:
             .fillMaxWidth()
             .height(85.dp),
         onClick ={
+            onBtnClick()
             navController.navigate(destino)
         }
     ) {

@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.appexcava.Clases.Usuario
 import com.example.appexcava.Pantallas.AgregarEmpresa
 import com.example.appexcava.Pantallas.AgregarEquipo
 import com.example.appexcava.Pantallas.AgregarUsuario
@@ -37,7 +38,19 @@ fun NavHostController() {
         composable("elegirDocumento") { ElegirDocumento(navController) }
 
         composable("menuUsuario") { MenuUsuario(navController)}
-        composable("agregarUsuario") { AgregarUsuario(navController) }
+        composable(
+            "agregarUsuario?usuarioId={usuarioId}",
+            arguments = listOf( navArgument("usuarioId"){
+                defaultValue = 0
+            })
+        ) {
+            val usuarioId = it.arguments?.getInt("usuarioId")
+            if (usuarioId != null) {
+                AgregarUsuario(navController, usuarioId)
+            }
+        }
+
+
         composable(
             "eliminarUsuario?texto={texto}",
             arguments = listOf( navArgument("texto"){
